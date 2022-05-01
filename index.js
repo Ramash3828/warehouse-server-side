@@ -16,16 +16,27 @@ const client = new MongoClient(uri, {
     useUnifiedTopology: true,
     serverApi: ServerApiVersion.v1,
 });
-const run = async () => {
+async function run() {
     try {
         await client.connect();
         console.log("db connect");
         const productCollection = client
             .db("bicycleStore")
             .collection("product");
+
+        app.post("/product", async (req, res) => {
+            const product = req.body;
+            const result = await productCollection.insertOne(product);
+            console.log(result);
+            res.send({ success: "Product added Successfully" });
+        });
+        app.get("/product", async (req, res) => {
+            const products = await productCollection.find({}).toArray();
+            res.send(products);
+        });
     } finally {
     }
-};
+}
 run().catch(console.dir());
 
 //Root
