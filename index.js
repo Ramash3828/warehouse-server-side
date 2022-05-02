@@ -24,6 +24,29 @@ async function run() {
             .db("bicycleStore")
             .collection("product");
 
+        app.get("/inventory/countItem", async (req, res) => {
+            const page = parseInt(req.query.page);
+            const qty = parseInt(req.query.quantity);
+            const query = {};
+            const cursor = productCollection.find(query);
+            let products;
+            if (page || qty) {
+                products = await cursor
+                    .skip(page * qty)
+                    .limit(qty)
+                    .toArray();
+            } else {
+                products = await cursor.toArray();
+            }
+            res.send(products);
+        });
+
+        // Count Data
+        app.get("/productCount", async (req, res) => {
+            const count = await productCollection.estimatedDocumentCount();
+            res.send({ count });
+        });
+
         //Insert data from client
         app.post("/inventory", async (req, res) => {
             const product = req.body;
