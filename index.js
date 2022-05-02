@@ -62,6 +62,16 @@ async function run() {
 
             res.send({ success: "Quantity updated successfully." });
         });
+
+        // Delete
+        app.delete("/inventory/:id", async (req, res) => {
+            const id = req.params.id;
+
+            const query = { _id: ObjectId(id) };
+            const deleteResult = await productCollection.deleteOne(query);
+
+            res.send({ success: "Item Delete Successfully" });
+        });
     } finally {
     }
 }
