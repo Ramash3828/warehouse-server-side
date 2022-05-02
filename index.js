@@ -37,7 +37,7 @@ async function run() {
             res.send(products);
         });
 
-        // POST data by keys
+        // get data by IDs
         app.get("/product/:id", async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -46,9 +46,21 @@ async function run() {
         });
 
         // Update quantity
-        app.put("/product", async (req, res) => {
-            const quantity = req.params.qty;
-            console.log(quantity);
+        app.put("/product/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const updateQty = req.body;
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: updateQty,
+            };
+            const editResult = await productCollection.updateOne(
+                filter,
+                updateDoc,
+                options
+            );
+
+            res.send({ success: "Quantity updated successfully." });
         });
     } finally {
     }
