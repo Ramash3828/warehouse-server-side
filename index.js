@@ -25,20 +25,20 @@ async function run() {
             .collection("product");
 
         //Insert data from client
-        app.post("/product", async (req, res) => {
+        app.post("/inventory", async (req, res) => {
             const product = req.body;
             const result = await productCollection.insertOne(product);
             res.send({ success: "Product added Successfully" });
         });
 
         //Load data from databse to client
-        app.get("/product", async (req, res) => {
+        app.get("/inventory", async (req, res) => {
             const products = await productCollection.find({}).toArray();
             res.send(products);
         });
 
         // get data by IDs
-        app.get("/product/:id", async (req, res) => {
+        app.get("/inventory/:id", async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const product = await productCollection.findOne(query);
@@ -46,7 +46,7 @@ async function run() {
         });
 
         // Update quantity
-        app.put("/product/:id", async (req, res) => {
+        app.put("/inventory/:id", async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const updateQty = req.body;
