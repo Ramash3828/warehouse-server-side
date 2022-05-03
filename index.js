@@ -15,16 +15,15 @@ function verifyToken(req, res, next) {
     let authHeaders = req.headers.authorization;
 
     if (!authHeaders) {
-        return res.status(401).send({ message: "Unauthorized access" });
+        return res.status(401).send({ message: "401 Unauthorized access" });
     }
     const token = authHeaders.split(" ")[1];
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
-            return res.status(403).send({ message: "Forbidden access" });
+            return res.status(403).send({ message: "403 Forbidden access" });
         }
 
-        // console.log("decoded", decoded);
-
+        req.decoded = decoded;
         next();
     });
 }
@@ -57,11 +56,22 @@ async function run() {
 
         // Get My Items
         app.get("/myitem", verifyToken, async (req, res) => {
+            const decodedEmail = req.decoded.email;
+
             const email = req.query.email;
-            const query = { email: email };
-            const cursor = productCollection.find(query);
-            const result = await cursor.toArray();
-            res.send(result);
+
+            if (email === decodedEmail) {
+                const query = { email: email };
+
+                const cursor = productCollection.find(query);
+                const result = await cursor.toArray();
+                console.log(result);
+                res.send(result);
+            } else {
+                return res
+                    .status(403)
+                    .send({ message: "403 Forbidden access" });
+            }
         });
 
         // Get All items
