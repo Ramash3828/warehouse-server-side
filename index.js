@@ -15,7 +15,7 @@ function verifyToken(req, res, next) {
     let authHeaders = req.headers.authorization;
 
     if (!authHeaders) {
-        return res.status(401).send({ message: "401 Unauthorized access" });
+        return res.status(401).send({ message: "Unauthorized access" });
     }
     const token = authHeaders.split(" ")[1];
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
