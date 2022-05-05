@@ -40,7 +40,6 @@ async function run() {
         const productCollection = client
             .db("bicycleStore")
             .collection("product");
-
         // Auth
         app.post("/login", async (req, res) => {
             const user = req.body;
@@ -57,9 +56,9 @@ async function run() {
         // Get My Items
         app.get("/myitem", verifyToken, async (req, res) => {
             const decodedEmail = req.decoded.email;
-
+            console.log("decoded", decodedEmail);
             const email = req.query.email;
-
+            console.log("email", email);
             if (email === decodedEmail) {
                 const query = { email: email };
 
